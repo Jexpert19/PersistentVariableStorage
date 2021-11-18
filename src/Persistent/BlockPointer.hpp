@@ -1,18 +1,24 @@
 #pragma once
-#include "PersistentStorageBase.hpp"
-#include "address.hpp"
+#include "Base.hpp"
 
-namespace PersistentStorage{
+namespace Persistent{
     class BlockPointer{
         private:
         size_t storageSize;
         size_t blockSize;
-
+        uint16_t address;
+        
         public:
-        persistentAddress_t address;
-
-        BlockPointer(size_t storageSize, size_t blockSize, persistentAddress_t address = 0)
+        BlockPointer(size_t storageSize, size_t blockSize, uint16_t address = 0)
         :storageSize{storageSize}, blockSize{blockSize}, address{address}{ }
+
+        uint16_t getAddress(){
+            return address;
+        }
+
+        void setAddress(uint16_t address){
+            this->address = address;
+        }
 
         void toNextBlock(){
             address = (address + blockSize) & (storageSize - 1);

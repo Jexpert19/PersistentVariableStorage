@@ -2,10 +2,10 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
-#include "PersistentStorage/PersistentStorageInterface.hpp"
+#include "Persistent/Base.hpp"
 
 template<size_t T_SIZE>
-class DummyEEPROM : public PersistentStorage::PersistentStorageInterface{
+class DummyEEPROM : public Persistent::Base{
     private:
     const uint8_t EEPROM_INIT_VALUE = 0xFF;
 
@@ -13,9 +13,7 @@ class DummyEEPROM : public PersistentStorage::PersistentStorageInterface{
     uint8_t dummyStorage[T_SIZE];
 
     DummyEEPROM()
-    :PersistentStorageInterface{T_SIZE} { }
-
-    void init() override{
+    :Base{T_SIZE}{
         memset(&dummyStorage, EEPROM_INIT_VALUE, sizeof(dummyStorage));
     }
 

@@ -3,7 +3,7 @@ extern "C"{
     #include "wrapper/avr/pgmspace.h"
 }
 
-namespace PersistentStorage{
+namespace Persistent{
     enum class Error{
         ok,
         not_found,

@@ -1,6 +1,6 @@
-#include "error.hpp"
+#include "Error.hpp"
 
-namespace PersistentStorage{
+namespace Persistent{
     const char eeprom_error_ok_pstr[] PROGMEM = "";
     const char eeprom_error_not_found_pstr[] PROGMEM = "Not found";
     const char eeprom_error_corrupted_pstr[] PROGMEM = "Corrupted";
