@@ -2,7 +2,8 @@
 #include <string.h>
 
 namespace Persistent{
-    Error Storage::read(const uint8_t KEY, Block &data){
+    template<typename T>
+    Error Storage::read(const uint8_t KEY, T &data){
         Block::Head target_head{.sentinel=0, .overwritable=0, .checksum=0, .key=KEY}, head;
         uint16_t target_address;
 
@@ -11,12 +12,12 @@ namespace Persistent{
             return e;
         }
 
-        storageBase->read(&head, target_address, Block::HEADSIZE);
-        if(head.overwritable == true){
+        readMemory(&head, target_address, Block::HEADSIZE);
+        if(head.deleted == true){
             return Error::not_found;
         }
 
-        storageBase->read(&data, target_address, sizeof(Block));
+        readMemory(&data, target_address, sizeof(Block));
 
         return Error::ok;
     }
@@ -33,6 +34,7 @@ namespace Persistent{
         Block block = {
             .head={
             .sentinel=0,
+            .blockSequenceEnd=false,
             .overwritable=true,
             .checksum=0,
             .key=KEY
@@ -50,8 +52,8 @@ namespace Persistent{
         uint8_t formated_block[sizeof(Block)];
         memset(formated_block, eeprom_format_value, sizeof(formated_block));
 
-        for(uint16_t address = 0; address < storageBase->blocksCount(); address += sizeof(Block)){
-            storageBase->write(formated_block, address, sizeof(formated_block));
+        for(uint16_t address = 0; address < blocksCount(); address += sizeof(Block)){
+            writeMemory(formated_block, address, sizeof(formated_block));
         }
     }
 }

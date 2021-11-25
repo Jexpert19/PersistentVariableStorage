@@ -11,8 +11,8 @@ namespace Persistent{
         bool sentinelWriteValue{0};
 
         public:
-        Position(Base *base)
-        :base{base},
+        Position(Base& base)
+        :base{&base},
         readPosition{base->storageSize(), sizeof(Block)}{
             initalizeFromStorage();
         }

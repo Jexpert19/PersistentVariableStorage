@@ -12,15 +12,15 @@ namespace Persistent{
         Position *position;
 
         public:
-        Searcher(Base *storageBase, Position *position)
-        :storageBase{storageBase}, position{position}{ }
+        Searcher(Base& storageBase, Position& position)
+        :storageBase{&storageBase}, position{&position}{ }
 
         Error findLatest(Block::Head* targetHead, uint16_t* out_address){
             BlockPointer ptr{storageBase->storageSize(), sizeof(Block), position->getReadPosition()};
             Block::Head head;
 
             do{
-                storageBase->read(&head, ptr.getAddress(), Block::HEADSIZE);
+                storageBase->readMemory(&head, ptr.getAddress(), Block::HEADSIZE);
 
                 if(head.key == targetHead->key){
                     *out_address= ptr.getAddress();

@@ -1,5 +1,6 @@
 #pragma once
 #include <stdint.h>
+#include <ostream>
 #include "Variable.hpp"
 
 namespace Log{
@@ -10,9 +11,12 @@ namespace Log{
         uint8_t additionalData[];// ????
     };
 
-    
-    class LogVariable : public Variable{
 
+    class LogableVariable : public Variable<LogEntry>{
+
+    };
+
+    class Log{
         public:
 
         enum class LogLevel{
@@ -26,16 +30,8 @@ namespace Log{
 
         }
 
-        Iterator readLog();
-    };
-
-    class Log{
-
-        public:
         void printLog(){
 
         }
     };
 }
-
-

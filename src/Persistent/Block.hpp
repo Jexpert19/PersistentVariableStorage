@@ -9,11 +9,14 @@ namespace Persistent{
             // Flag to find current reading pos.
             bool sentinel :1;
 
-            // Indicates that this block can be overwritten
-            bool overwritable :1;
+            // Block will not be found by searcher
+            // and could be overwritten if needed
+            bool deleted :1;
+
+            bool blockSequenceEnd :1;
 
             // Not used right now
-            uint8_t checksum :6;
+            uint8_t checksum :5;
 
             uint8_t key :8;
         }head;

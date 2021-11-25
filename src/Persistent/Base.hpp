@@ -18,7 +18,7 @@ namespace Persistent{
         constexpr uint16_t firstBlockAddress() const {return 0;}
         constexpr uint16_t lastBlockAddress() const {return storageSize() - sizeof(Block);}
 
-        virtual void read(void* data_out, uint16_t address, size_t __n) = 0;
-        virtual void write(const void* data_in, uint16_t address, size_t __n) = 0;
+        virtual void readMemory(void* data_out, uint16_t address, size_t __n) = 0;
+        virtual void writeMemory(const void* data_in, uint16_t address, size_t __n) = 0;
     };
 }

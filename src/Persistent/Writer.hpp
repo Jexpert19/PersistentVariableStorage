@@ -11,10 +11,10 @@ namespace Persistent{
         Searcher* searcher;
 
         public:
-        Writer(Base* storageBase,
-                                Position* position,
-                                Searcher* searcher)
-        :storageBase{storageBase}, position{position}, searcher{searcher}{}
+        Writer(Base& storageBase,
+               Position& position,
+               Searcher& searcher)
+        :storageBase{&storageBase}, position{&position}, searcher{&searcher}{}
 
         // Get's set in this function
         // - Sentinel
@@ -49,7 +49,7 @@ namespace Persistent{
 
             // Could be overwritten or updated
             if(targetHead.key == head.key ||
-            head.overwritable == true){
+            head.deleted == true){
             return true;
             }
 
