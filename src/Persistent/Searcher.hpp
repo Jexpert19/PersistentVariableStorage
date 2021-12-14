@@ -1,6 +1,5 @@
-#pragma once
+#pragma once/*
 #include <stdlib.h>
-#include "Base.hpp"
 #include "Position.hpp"
 #include "Error.hpp"
 #include "Block.hpp"
@@ -33,4 +32,4 @@ namespace Persistent{
             return Error::not_found;
             }
     };
-}
+}*/

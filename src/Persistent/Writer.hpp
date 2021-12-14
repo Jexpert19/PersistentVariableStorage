@@ -1,5 +1,4 @@
-#pragma once
-#include "Base.hpp"
+#pragma once/*
 #include "Position.hpp"
 #include "Searcher.hpp"
 
@@ -66,4 +65,4 @@ namespace Persistent{
             return true;
         }
     };
-}
+}*/

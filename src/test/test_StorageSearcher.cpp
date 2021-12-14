@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
-#include "dummy_EEPROM.hpp"
+/*#include "gtest/gtest.h"
+#include "DummyEEPROM.hpp"
 #include "Persistent/Position.hpp"
 #include "Persistent/Searcher.hpp"
 #include <array>
@@ -45,4 +45,4 @@ uint16_t testFindLatestFrom(DummyEEPROM<DUMMY_EEPROM_SIZE>& dummy, Persistent::B
     }
 
     return result;
-}
+}*/

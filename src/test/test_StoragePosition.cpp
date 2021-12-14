@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 #include "Persistent/Position.hpp"
-#include "dummy_EEPROM.hpp"
+#include "DummyEEPROM.hpp"
 
 #define BLOCK_SIZE 16
 
@@ -24,8 +24,8 @@ uint16_t readPositionFromSentienlPattern(std::array<bool, 4> arr){
     uint16_t address = 0;
     
     for(auto sentinel : arr){
-        Persistent::Block::Head head{.sentinel=sentinel, .overwritable=0, .checksum=0, .key=0};
-        dummy.write(&head, address, sizeof(Persistent::Block::Head));
+        Persistent::Block::Head head{.sentinel=sentinel, .deleted=0, .blockSequenceEnd=0, .checksum=0, .key=0};
+        dummy.writeMemory(&head, address, sizeof(Persistent::Block::Head));
 
         address += BLOCK_SIZE;
     }
@@ -33,8 +33,8 @@ uint16_t readPositionFromSentienlPattern(std::array<bool, 4> arr){
     return getPositionFromDummy(dummy);
 }
 
-uint16_t getPositionFromDummy(DummyEEPROM<64>& eeprom){
-    Persistent::Position position{&eeprom};
+uint16_t getPositionFromDummy(DummyEEPROM<64>& storage){
+    Persistent::Position position{storage};
 
     return position.getReadPosition();
 }

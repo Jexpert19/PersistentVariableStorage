@@ -1,45 +1,43 @@
 #pragma once
+#include "CircularBlockIterator.hpp"
 #include <stdbool.h>
-#include "Base.hpp"
-#include "BlockPointer.hpp"
 
 namespace Persistent{
     class Position{
         private:
-        Base *base;
-        BlockPointer readPosition;
+        CircularBlockIterator readPosition;
         bool sentinelWriteValue{0};
 
         public:
-        Position(Base& base)
-        :base{&base},
-        readPosition{base->storageSize(), sizeof(Block)}{
+        Position(StorageAdapter& storage)
+        :readPosition{storage}{
             initalizeFromStorage();
         }
 
         private:
         void initalizeFromStorage(){
-            BlockPointer ptr{base->storageSize(), sizeof(Block), base->firstBlockAddress()};
             Block::Head previousHead, currentHead;
-        
-            base->read(&previousHead, ptr.getAddress(), Block::HEADSIZE);
+            previousHead = readPosition.getBlockHead();
+            auto end = readPosition;
 
+            // Search sentienl change
             do{
-                ptr.toNextBlock();   
+                readPosition.toNextBlock();
 
-                base->read(&currentHead, ptr.getAddress(), Block::HEADSIZE);
+                currentHead = readPosition.getBlockHead();
 
                 if(previousHead.sentinel != currentHead.sentinel){
-                    ptr.toPreviousBlock();
-                    readPosition.setAddress(ptr.getAddress());
+                    readPosition.toPreviousBlock();
                     sentinelWriteValue = previousHead.sentinel;
                     return;
                 }
 
                 previousHead = currentHead;
-            }while(ptr.getAddress() != base->lastBlockAddress());
+            }
+            while(readPosition != end);
 
-            readPosition.setAddress(base->lastBlockAddress());
+            // No sentinel change found
+            readPosition.toPreviousBlock();
             sentinelWriteValue = !currentHead.sentinel;
         }
 
@@ -49,9 +47,9 @@ namespace Persistent{
         }
 
         uint16_t getWritePosition(){
-            BlockPointer ptr{readPosition};
-            ptr.toNextBlock();
-            return ptr.getAddress();
+            CircularBlockIterator it{readPosition};
+            it.toNextBlock();
+            return it.getAddress();
         }
 
         bool getSentinelWriteValue(){
@@ -59,11 +57,10 @@ namespace Persistent{
         }
 
         void toNextBlock(){
-            uint16_t old = readPosition.getAddress();
             readPosition.toNextBlock();
 
-            // Update sentinel
-            if(readPosition.getAddress()< old){
+            // One full iteration through memory
+            if(readPosition.getAddress() == 0){
                 sentinelWriteValue ^= true;
             }
         }

@@ -1,3 +1,4 @@
+#pragma once/*
 #include "Storage.hpp"
 #include "UniqueKeyGenerator.hpp"
 #include "Variable.hpp"
@@ -16,4 +17,4 @@ namespace Persistent{
             return var;
         }
     };
-}
+}*/

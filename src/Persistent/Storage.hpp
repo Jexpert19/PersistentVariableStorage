@@ -1,8 +1,8 @@
-#pragma once
+#pragma once/*
 #include <stdlib.h>
 #include <stdbool.h>
+#include "Version.hpp"
 #include "Error.hpp"
-#include "Base.hpp"
 #include "Position.hpp"
 #include "Searcher.hpp"
 #include "Writer.hpp"
@@ -39,4 +39,4 @@ namespace Persistent{
 
         void complete_format();
     };
-}
+}*/

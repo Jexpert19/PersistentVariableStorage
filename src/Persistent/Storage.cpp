@@ -1,4 +1,4 @@
-#include "Storage.hpp"
+/*#include "Storage.hpp"
 #include <string.h>
 
 namespace Persistent{
@@ -56,4 +56,4 @@ namespace Persistent{
             writeMemory(formated_block, address, sizeof(formated_block));
         }
     }
-}
+}*/
