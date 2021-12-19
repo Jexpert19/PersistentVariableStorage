@@ -7,6 +7,9 @@ namespace Persistent{
         private:
         StorageAdapter *storage;
         uint16_t address;
+
+        Block bufferedBlock;
+        bool blockBuffered = false;
         
         public:
         CircularBlockIterator(StorageAdapter& storage, uint16_t address = 0)
@@ -17,33 +20,56 @@ namespace Persistent{
         }
 
         void setAddress(uint16_t address){
+            blockBuffered = false;
             this->address = address;
         }
 
         void toNextBlock(){
+            blockBuffered = false;
             address = (address + storage->blockSize()) & (storage->storageSize() - 1);
         }
 
         void toPreviousBlock(){
+            blockBuffered = false;
             address = (address - storage->blockSize()) & (storage->storageSize() - 1);
         }
 
         Block getBlock(){
-            Block data{};
-            storage->readMemory(&data, address, storage->blockSize());
-            return data;
+            if(blockBuffered){
+                return bufferedBlock;
+            }
+
+            Block block{};
+            storage->readMemory(&block, address, storage->blockSize());
+
+            bufferedBlock = block;
+            blockBuffered = true;
+
+            return block;
         }
 
         Block::Head getBlockHead(){
+            if(blockBuffered){
+                return bufferedBlock.head;
+            }
+
             Block::Head head{};
             storage->readMemory(&head, address, Block::HEADSIZE);
             return head;
         }
 
         Block::Body getBlockBody(){
-            Block::Body body{};
-            storage->readMemory(&body, address, Block::BODYSIZE);
-            return body;
+            if(blockBuffered){
+                return bufferedBlock.body;
+            }
+
+            Block block{};
+            storage->readMemory(&block, address, storage->blockSize());
+
+            bufferedBlock = block;
+            blockBuffered = true;
+
+            return block.body;
         }
         
         friend bool operator==(const CircularBlockIterator& it1, const CircularBlockIterator& it2){
