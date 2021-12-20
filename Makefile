@@ -89,3 +89,7 @@ clean:
 run: all
 	./$(OUTPUTMAIN)
 	@echo Executing 'run: all' complete!
+
+check:
+
+distcheck:
