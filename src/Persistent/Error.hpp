@@ -1,14 +1,14 @@
 #pragma once
 extern "C"{
-    #include "wrapper/avr/pgmspace.h"
+  #include "wrapper/avr/pgmspace.h"
 }
 
 namespace Persistent{
-    enum class Error{
-        ok,
-        not_found,
-        corrupted
-    };
+  enum class Error{
+    ok,
+    not_found,
+    corrupted
+  };
 
-    PGM_P eepromErrorToPstr(Error error);
+  PGM_P eepromErrorToPstr(Error error);
 }

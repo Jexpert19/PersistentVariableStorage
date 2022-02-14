@@ -1,68 +1,68 @@
 #pragma once
-#include "CircularBlockIterator.hpp"
+#include "BlockStorage.hpp"
 #include <stdbool.h>
 
 namespace Persistent{
-    class Position{
-        private:
-        CircularBlockIterator readPosition;
-        bool sentinelWriteValue{0};
+  class Position{
+    private:
+    BlockStorage::Iterator readPosition;
+    bool sentinelWriteValue{0};
 
-        public:
-        Position(StorageAdapter& storage)
-        :readPosition{storage}{
-            initalizeFromStorage();
+    public:
+    Position(BlockStorage& storage)
+    :readPosition{storage}{
+      initalizeFromStorage();
+    }
+
+    private:
+    void initalizeFromStorage(){
+      Block::Head previousHead, currentHead;
+      previousHead = readPosition.getBlockHead();
+      auto end = readPosition;
+
+      // Search sentienl change
+      do{
+        readPosition.toNextBlock();
+
+        currentHead = readPosition.getBlockHead();
+
+        if(previousHead.sentinel != currentHead.sentinel){
+          readPosition.toPreviousBlock();
+          sentinelWriteValue = previousHead.sentinel;
+          return;
         }
 
-        private:
-        void initalizeFromStorage(){
-            Block::Head previousHead, currentHead;
-            previousHead = readPosition.getBlockHead();
-            auto end = readPosition;
+        previousHead = currentHead;
+      }
+      while(readPosition != end);
 
-            // Search sentienl change
-            do{
-                readPosition.toNextBlock();
+      // No sentinel change found
+      readPosition.toPreviousBlock();
+      sentinelWriteValue = !currentHead.sentinel;
+    }
 
-                currentHead = readPosition.getBlockHead();
+    public:
+    uint16_t getReadPosition(){
+      return readPosition.getAddress();
+    }
 
-                if(previousHead.sentinel != currentHead.sentinel){
-                    readPosition.toPreviousBlock();
-                    sentinelWriteValue = previousHead.sentinel;
-                    return;
-                }
+    uint16_t getWritePosition(){
+      auto it{readPosition};
+      it.toNextBlock();
+      return it.getAddress();
+    }
 
-                previousHead = currentHead;
-            }
-            while(readPosition != end);
+    bool getSentinelWriteValue(){
+      return sentinelWriteValue;
+    }
 
-            // No sentinel change found
-            readPosition.toPreviousBlock();
-            sentinelWriteValue = !currentHead.sentinel;
-        }
+    void toNextBlock(){
+      readPosition.toNextBlock();
 
-        public:
-        uint16_t getReadPosition(){
-            return readPosition.getAddress();
-        }
-
-        uint16_t getWritePosition(){
-            CircularBlockIterator it{readPosition};
-            it.toNextBlock();
-            return it.getAddress();
-        }
-
-        bool getSentinelWriteValue(){
-            return sentinelWriteValue;
-        }
-
-        void toNextBlock(){
-            readPosition.toNextBlock();
-
-            // One full iteration through memory
-            if(readPosition.getAddress() == 0){
-                sentinelWriteValue ^= true;
-            }
-        }
-    };
+      // One full iteration through memory
+      if(readPosition.getAddress() == 0){
+        sentinelWriteValue ^= true;
+      }
+    }
+  };
 }

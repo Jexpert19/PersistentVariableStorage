@@ -2,5 +2,5 @@
 #include <string>
 
 namespace Persistent{
-    std::string const version{"1.0.0"};
+  std::string const version{"1.0.0"};
 }
